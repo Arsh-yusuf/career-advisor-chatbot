@@ -27,6 +27,12 @@ career-advisor-chatbot/
 ```
 
 ---
+---
+## Web App Link
+
+https://2abjf9wdnxjqfw6bg5y3z3.streamlit.app/
+
+---
 
 ## ⚙️ Setup Instructions
 
