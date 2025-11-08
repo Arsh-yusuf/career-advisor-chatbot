@@ -1,8 +1,8 @@
 # advisor.py (Chatbot support with memory)
 import cohere
 import os
-from langchain.chains import ConversationChain
-from langchain.memory import ConversationBufferMemory
+from langchain_community.chains import ConversationChain
+from langchain_community.memory import ConversationBufferMemory
 from langchain.llms.base import LLM
 import streamlit as st
 
@@ -77,3 +77,4 @@ def get_career_advice(name, education, skills, interests):
     """
     response = co.generate(model="command", prompt=prompt, max_tokens=500, temperature=0.6)
     return response.generations[0].text.strip()
+
