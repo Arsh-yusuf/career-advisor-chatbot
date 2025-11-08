@@ -2,11 +2,10 @@
 import cohere
 import os
 import streamlit as st
+from langchain.chains import ConversationChain
+from langchain.memory import ConversationBufferMemory
+from langchain.llms.base import LLM
 
-# ✅ Updated LangChain imports (new modular structure)
-from langchain_community.chains import ConversationChain
-from langchain_community.memory import ConversationBufferMemory
-from langchain_core.language_models.llms import LLM  # updated import
 
 # Get Cohere API key (supports both local and Streamlit Cloud)
 if "COHERE_API_KEY" in st.secrets:
@@ -87,3 +86,4 @@ def get_career_advice(name, education, skills, interests):
         temperature=0.6
     )
     return response.generations[0].text.strip()
+
