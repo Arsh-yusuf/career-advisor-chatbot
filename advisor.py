@@ -1,70 +1,73 @@
 # advisor.py (Chatbot support with memory)
 import cohere
 import os
-from langchain_community.chains import ConversationChain
-from langchain_community.memory import ConversationBufferMemory
-from langchain.llms.base import LLM
 import streamlit as st
 
-# For local development
+# ✅ Updated LangChain imports (new modular structure)
+from langchain_community.chains import ConversationChain
+from langchain_community.memory import ConversationBufferMemory
+from langchain_core.language_models.llms import LLM  # updated import
 
-# from dotenv import load_dotenv
-# load_dotenv()  # Load .env variables
+# Get Cohere API key (supports both local and Streamlit Cloud)
+if "COHERE_API_KEY" in st.secrets:
+    COHERE_API_KEY = st.secrets["COHERE_API_KEY"]
+else:
+    COHERE_API_KEY = os.getenv("COHERE_API_KEY")
 
-# COHERE_API_KEY = os.getenv("COHERE_API_KEY")
-# co = cohere.Client(COHERE_API_KEY)
-
-COHERE_API_KEY = st.secrets["COHERE_API_KEY"]
 co = cohere.Client(COHERE_API_KEY)
 
-# Basic wrapper for Cohere as a LangChain-compatible LLM
+# ✅ Define LangChain-compatible Cohere wrapper
 class CohereLLM(LLM):
     def _call(self, prompt, stop=None):
-        response = co.generate(prompt=prompt, model="command", max_tokens=400, temperature=0.6)
+        response = co.generate(
+            prompt=prompt,
+            model="command",  # You can also use "command-r" or "command-light"
+            max_tokens=400,
+            temperature=0.6
+        )
         return response.generations[0].text.strip()
 
     @property
     def _llm_type(self):
         return "cohere"
 
-# Persistent memory
+# ✅ Initialize memory and conversation
 memory = ConversationBufferMemory(return_messages=True)
 llm = CohereLLM()
 conversation = ConversationChain(llm=llm, memory=memory, verbose=False)
 
+# ✅ Chat response with memory
 def get_chat_response(user_input, history):
-    # Extract resume background (system message)
     background = ""
     for msg in history:
         if msg["role"] == "system":
             background = msg["content"]
             break
 
-    # Combine background + full chat history as context
-    conversation = ""
+    # Combine chat context
+    chat_context = ""
     for msg in history:
         if msg["role"] != "system":
             prefix = "User" if msg["role"] == "user" else "AI"
-            conversation += f"{prefix}: {msg['content']}\n"
+            chat_context += f"{prefix}: {msg['content']}\n"
 
-    # Final prompt
-    prompt = f"""{background}
+    prompt = f"""
+    {background}
 
-You are an AI Career Advisor. Use the user's background to provide helpful, role-specific, and course-based suggestions.
+    You are an AI Career Advisor. Use the user's background to provide role-specific and course-based suggestions.
 
-{conversation}
-AI:"""
+    {chat_context}
+    AI:"""
 
     response = co.generate(
-        model="command",  # or "command-light"
+        model="command",
         prompt=prompt,
         max_tokens=500,
         temperature=0.7
     )
-
     return response.generations[0].text.strip()
 
-
+# ✅ Structured career advice generator
 def get_career_advice(name, education, skills, interests):
     prompt = f"""
     You are an AI Career Advisor.
@@ -73,8 +76,14 @@ def get_career_advice(name, education, skills, interests):
     - Skills: {skills}
     - Interests: {interests}
 
-    Suggest 3 suitable career paths for this user. For each path, recommend 2 online courses and top companies hiring in that field.
+    Suggest 3 suitable career paths for this user. 
+    For each path, recommend 2 relevant online courses and list 3 top companies hiring in that field.
     """
-    response = co.generate(model="command", prompt=prompt, max_tokens=500, temperature=0.6)
-    return response.generations[0].text.strip()
 
+    response = co.generate(
+        model="command",
+        prompt=prompt,
+        max_tokens=500,
+        temperature=0.6
+    )
+    return response.generations[0].text.strip()
