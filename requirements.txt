@@ -1,5 +1,4 @@
 pymupdf
 streamlit>=1.36.0
 cohere>=5.3.4
-langchain-core>=0.2.0
-langchain-community>=0.2.0
+langchain==0.1.12
