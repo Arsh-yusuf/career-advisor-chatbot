@@ -18,7 +18,7 @@ co = cohere.Client(COHERE_API_KEY)
 class CohereLLM(LLM):
     def _call(self, prompt, stop=None):
         response = co.chat(
-            model="command-r",  # ✅ New Chat API model
+            model="command-a-03-2025",  # ✅ New Chat API model
             message=prompt,
             temperature=0.6
         )
@@ -103,6 +103,7 @@ def get_career_advice(name, education, skills, interests):
         temperature=0.6
     )
     return response.generations[0].text.strip()
+
 
 
 
