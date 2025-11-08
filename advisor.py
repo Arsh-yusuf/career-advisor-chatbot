@@ -56,7 +56,7 @@ def get_chat_response(user_input, history):
 
     # ✅ Use the new free-tier model (Chat API)
     response = co.chat(
-        model="c4",           # <-- free-tier compatible model
+        model="command-a-03-2025",           # <-- free-tier compatible model
         message=prompt,
         temperature=0.7
     )
@@ -76,7 +76,7 @@ def get_career_advice(name, education, skills, interests):
     """
 
     response = co.chat(
-        model="command-r",
+        model="command-a-03-2025",
         message=prompt,
         temperature=0.6
     )
@@ -97,12 +97,13 @@ def get_career_advice(name, education, skills, interests):
     """
 
     response = co.generate(
-        model="command",
+        model="command-a-03-2025",
         prompt=prompt,
         max_tokens=500,
         temperature=0.6
     )
     return response.generations[0].text.strip()
+
 
 
 
