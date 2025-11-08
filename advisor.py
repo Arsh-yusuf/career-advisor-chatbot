@@ -54,9 +54,9 @@ def get_chat_response(user_input, history):
     {chat_context}
     AI:"""
 
-    # ✅ Updated to Chat API
+    # ✅ Use the new free-tier model (Chat API)
     response = co.chat(
-        model="command-r",
+        model="c4",           # <-- free-tier compatible model
         message=prompt,
         temperature=0.7
     )
@@ -103,5 +103,6 @@ def get_career_advice(name, education, skills, interests):
         temperature=0.6
     )
     return response.generations[0].text.strip()
+
 
 
