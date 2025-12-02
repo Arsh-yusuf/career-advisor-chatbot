@@ -16,7 +16,7 @@ Ask questions like:
 """)
 
 # Upload resume
-resume_file = st.file_uploader("📄 Upload Your Resume (PDF) - Optional", type=["pdf"])
+resume_file = st.file_uploader("📄 Upload Your Resume (PDF)", type=["pdf"])
 resume_context = ""
 
 if resume_file:
@@ -65,4 +65,5 @@ if user_input:
 for msg in st.session_state.chat_history:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
+
 
