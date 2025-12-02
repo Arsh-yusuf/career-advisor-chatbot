@@ -35,11 +35,22 @@ User Background:
     st.success("✅ Resume uploaded and parsed successfully!")
     st.markdown("**You can now start chatting with the AI Career Advisor.**")
 
-# Initialize chat history
+# Initialize chat history if not exists
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
-    if resume_context:
-        st.session_state.chat_history.append({"role": "system", "content": resume_context})
+
+# Always refresh/update resume background if uploaded
+if resume_context:
+    # Remove old system message if exists
+    st.session_state.chat_history = [
+        msg for msg in st.session_state.chat_history if msg["role"] != "system"
+    ]
+
+    # Add updated resume context as system message
+    st.session_state.chat_history.insert(0,
+        {"role": "system", "content": resume_context}
+    )
+
 
 # Chat input
 user_input = st.chat_input("Type your message here...")
@@ -54,3 +65,4 @@ if user_input:
 for msg in st.session_state.chat_history:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
+
